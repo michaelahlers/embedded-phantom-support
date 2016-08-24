@@ -1,0 +1,4 @@
+autoScalaLibrary := false
+
+libraryDependencies ++=
+  Nil
