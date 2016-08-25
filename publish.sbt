@@ -5,6 +5,8 @@ crossPaths := false
 
 publishMavenStyle := true
 
+publishArtifact in Compile := false
+
 awsProfile := "default"
 
 s3credentials :=
