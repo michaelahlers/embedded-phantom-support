@@ -1,10 +1,10 @@
 organization := "consulting.ahlers"
 
-name := "embedded-phantom-binary"
+name := "embedded-phantom-support"
 
 description := "Distribution of PhantomJS binaries as artifacts."
 
-homepage := Some(url("http://github.com/michaelahlers/embedded-phantom-binary"))
+homepage := Some(url("http://github.com/michaelahlers/embedded-phantom-support"))
 
 startYear := Some(2016)
 
@@ -14,9 +14,9 @@ developers :=
 
 scmInfo :=
   Some(ScmInfo(
-    browseUrl = url("http://github.com/michaelahlers/embedded-phantom-binary"),
-    connection = "scm:git:https://github.com:michaelahlers/embedded-phantom-binary.git",
-    devConnection = Some("scm:git:git@github.com:michaelahlers/embedded-phantom-binary.git")
+    browseUrl = url("http://github.com/michaelahlers/embedded-phantom-support"),
+    connection = "scm:git:https://github.com:michaelahlers/embedded-phantom-support.git",
+    devConnection = Some("scm:git:git@github.com:michaelahlers/embedded-phantom-support.git")
   ))
 
 licenses :=
