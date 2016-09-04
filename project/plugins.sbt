@@ -10,5 +10,5 @@ addSbtPlugin("com.jsuereth" % "sbt-pgp" % "1.0.1")
 addSbtPlugin("ohnosequences" % "sbt-s3-resolver" % "0.14.0")
 
 libraryDependencies ++=
-  "consulting.ahlers" % "embedded-phantom" % "1.0.1-SNAPSHOT" ::
+  "consulting.ahlers" % "embedded-phantom" % "1.0.2" ::
     Nil
