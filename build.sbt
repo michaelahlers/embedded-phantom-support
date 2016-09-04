@@ -1,19 +1,13 @@
 import java.io.File.createTempFile
 import java.util.jar.Manifest
 
-import ahlers.phantom.embedded.PhantomDownloadConfigBuilder
 import ahlers.phantom.embedded.PhantomPackageResolver._
 import ahlers.phantom.embedded.PhantomVersion.{byLabel => versionByLabel}
+import ahlers.phantom.embedded.{PhantomDownloadConfigBuilder, PhantomDownloader}
 import de.flapdoodle.embed.process.distribution.BitSize._
 import de.flapdoodle.embed.process.distribution.Platform._
 import de.flapdoodle.embed.process.distribution.{BitSize, Distribution, Platform}
-import de.flapdoodle.embed.process.store.Downloader
 import sbt.Def.Initialize
-
-val locationFor: Distribution => String = {
-  val config = new PhantomDownloadConfigBuilder().defaults().build()
-  new Downloader().getDownloadUrl(config, _)
-}
 
 def artifactFor(platform: Platform, architectures: BitSize*): Initialize[Task[File]] =
   Def.task((name.value, version.value, streams.value.log)) map {
@@ -24,13 +18,7 @@ def artifactFor(platform: Platform, architectures: BitSize*): Initialize[Task[Fi
 
       val entries: Seq[(File, String)] =
         distributions map { distribution =>
-          val archive = createTempFile(archiveFilenameFor(distribution), archiveExtensionFor(distribution))
-          val source: URL = new URL(locationFor(distribution))
-
-          log.info(s"""Downloading "$source" to "$archive"...""")
-          source #> archive !! log
-          log.info(s"""Downloaded "$source" (${archive.length} bytes).""")
-
+          val archive = new PhantomDownloader().download(new PhantomDownloadConfigBuilder().defaults().build(), distribution)
           val destination = s"ahlers/embedded/phantom/${archivePathFor(distribution)}"
           archive -> destination
         }
