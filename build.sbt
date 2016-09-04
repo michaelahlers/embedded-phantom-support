@@ -9,16 +9,22 @@ import de.flapdoodle.embed.process.distribution.Platform._
 import de.flapdoodle.embed.process.distribution.{BitSize, Distribution, Platform}
 import sbt.Def.Initialize
 
+val generateLinuxArtifact = taskKey[File]("Fetch and package an artifact for Linux.")
+val generateMacOSArtifact = taskKey[File]("Fetch and package an artifact for macOS.")
+val generateWindowsArtifact = taskKey[File]("Fetch and package an artifact for Windows.")
+
 def artifactFor(platform: Platform, architectures: BitSize*): Initialize[Task[File]] =
   Def.task((name.value, version.value, streams.value.log)) map { case (project, ver, log) =>
 
     /* If this will fail, fail fast before downloading anything. */
     val distributions = architectures.map(new Distribution(versionByLabel(ver.split('-').head), platform, _))
 
+    val download: Distribution => File = new PhantomDownloader().download(new PhantomDownloadConfigBuilder().defaults().build(), _)
+
     val entries: Seq[(File, String)] =
       distributions map { distribution =>
-        val archive = new PhantomDownloader().download(new PhantomDownloadConfigBuilder().defaults().build(), distribution)
-        val destination = s"ahlers/embedded/phantom/${archivePathFor(distribution)}"
+        val archive = download(distribution)
+        val destination = s"ahlers/embedded/phantom/support/${archivePathFor(distribution)}"
         archive -> destination
       }
 
@@ -27,10 +33,6 @@ def artifactFor(platform: Platform, architectures: BitSize*): Initialize[Task[Fi
     artifact
 
   }
-
-val generateLinuxArtifact = taskKey[File]("Fetch and package an artifact for Linux.")
-val generateMacOSArtifact = taskKey[File]("Fetch and package an artifact for macOS.")
-val generateWindowsArtifact = taskKey[File]("Fetch and package an artifact for Windows.")
 
 generateLinuxArtifact <<= artifactFor(Linux, B32, B64)
 generateMacOSArtifact <<= artifactFor(OS_X, B64)
