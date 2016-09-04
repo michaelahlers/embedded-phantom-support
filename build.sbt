@@ -10,22 +10,21 @@ import de.flapdoodle.embed.process.distribution.{BitSize, Distribution, Platform
 import sbt.Def.Initialize
 
 def artifactFor(platform: Platform, architectures: BitSize*): Initialize[Task[File]] =
-  Def.task((name.value, version.value, streams.value.log)) map {
-    case (project, ver, log) =>
+  Def.task((name.value, version.value, streams.value.log)) map { case (project, ver, log) =>
 
-      /* If this will fail, fail fast before downloading anything. */
-      val distributions = architectures.map(new Distribution(versionByLabel(ver.split('-').head), platform, _))
+    /* If this will fail, fail fast before downloading anything. */
+    val distributions = architectures.map(new Distribution(versionByLabel(ver.split('-').head), platform, _))
 
-      val entries: Seq[(File, String)] =
-        distributions map { distribution =>
-          val archive = new PhantomDownloader().download(new PhantomDownloadConfigBuilder().defaults().build(), distribution)
-          val destination = s"ahlers/embedded/phantom/${archivePathFor(distribution)}"
-          archive -> destination
-        }
+    val entries: Seq[(File, String)] =
+      distributions map { distribution =>
+        val archive = new PhantomDownloader().download(new PhantomDownloadConfigBuilder().defaults().build(), distribution)
+        val destination = s"ahlers/embedded/phantom/${archivePathFor(distribution)}"
+        archive -> destination
+      }
 
-      val artifact = createTempFile(s"$project-$platform", "jar")
-      Package.makeJar(entries, artifact, new Manifest, log)
-      artifact
+    val artifact = createTempFile(s"$project-$platform", "jar")
+    Package.makeJar(entries, artifact, new Manifest, log)
+    artifact
 
   }
 
