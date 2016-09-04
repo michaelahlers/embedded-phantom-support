@@ -1,9 +1,9 @@
 import java.io.File.createTempFile
 import java.util.jar.Manifest
 
+import ahlers.phantom.embedded.PhantomDownloadConfigBuilder
 import ahlers.phantom.embedded.PhantomPackageResolver._
 import ahlers.phantom.embedded.PhantomVersion.{byLabel => versionByLabel}
-import ahlers.phantom.embedded.{PhantomDownloadConfigBuilder, PhantomPackageResolver, PhantomVersion}
 import de.flapdoodle.embed.process.distribution.BitSize._
 import de.flapdoodle.embed.process.distribution.Platform._
 import de.flapdoodle.embed.process.distribution.{BitSize, Distribution, Platform}
@@ -31,7 +31,7 @@ def artifactFor(platform: Platform, architectures: BitSize*): Initialize[Task[Fi
           source #> archive !! log
           log.info(s"""Downloaded "$source" (${archive.length} bytes).""")
 
-          val destination = s"consulting/ahlers/embedded/phantom/${archivePathFor(distribution)}"
+          val destination = s"ahlers/embedded/phantom/${archivePathFor(distribution)}"
           archive -> destination
         }
 
